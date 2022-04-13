@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Web3Modal from 'web3modal'
 import { css } from '@emotion/css'
+import Image from 'next/image'
 
 import {
   marketplaceAddress
 } from '../config'
-
+import Link from 'next/link';
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
 
 export default function Home() {
@@ -61,54 +62,105 @@ export default function Home() {
     await transaction.wait()
     loadNFTs()
   }
+
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className={noNftsHome}>No items in marketplace</h1>)
   return (
     <div className={home}>
-    <div className={displayNft}>
+      <div className={displayNft}>
         <div className={displayNftContainer}>
           {
             nfts.map((nft, i) => (
-              <div key={i} className="">
+
+              <div key={i} className={nftBox}>
+                <p className={nftSeller}>Creator: {nft.seller}</p>
                 <img className={nftImg} src={nft.image} />
-                <div className="">
-                  <p className="">{nft.name}</p>
-                  <div style={{ height: '70px', overflow: 'hidden' }}>
-                    <p className="">{nft.description}</p>
-                  </div>
-                </div>
-                <div className="">
-                  <p className="">{nft.price} ETH</p>
-                  <button className="" onClick={() => buyNft(nft)}>Buy</button>
-                </div>
+                {/* <p className="">Seller: {nft.seller}</p> */}
+                <p className={nftBoxName}>{nft.name}</p>
+                {/* <p className={nftBoxDes}>{nft.description}</p> */}
+                <p className={nftBoxPrc}>{nft.price} ETH&nbsp;&nbsp;&nbsp;<Image width={30} height={30} src={require('./assets/etherium.svg')} /></p>
+                <button className={buyNftBtn} onClick={() => buyNft(nft)}>Buy Now</button>
+                <Link
+                  href={{
+                    pathname: "/display-nft",
+                    query: {
+                      img: nft.image,
+                      name: nft.name,
+                      description: nft.description,
+                      price: nft.price,
+                      seller: nft.seller,
+                    }
+                  }}>View More</Link>
               </div>
             ))
           }
+        </div>
       </div>
-    </div>
     </div>
   )
 }
 
 const noNftsHome = css`
-  color: white;
+    color: white;
     padding-top: 140px;
     text-align: center;
     font-size: 30px;
 `
 const home = css`
-    padding-top: 120px;
+    padding-top: 140px;
 `
 const displayNft = css`
+    width: 100%;
+`
+const displayNftContainer = css`
     display: flex;
     justify-contents: center;
     align-items: center;
-    width: 100%;
-    background-color: white;
-    
+    flex-wrap: wrap;
 `
-const displayNftContainer = css`
-    width: 400px;
+const nftBox = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 300px;
+  padding: 20px 5px;
+  margin: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #282828;
+  }
+`
+const nftSeller = css`
+    position: relative;
+    font-size: 10px;
+`
+
+const nftBoxName = css`
+  font-size: 30px;
+  font-weight: 600;
+`
+const nftBoxPrc = css`
+  margin-top: 10px;
+  color: #ff7324;
+  display: flex;
+  align-items: center;
+`
+const buyNftBtn = css`
+  margin-top: 20px;
+  background: rgb(45, 129, 255);;
+  padding: 5px 15px;
+  border: 2px solid #111;
+  border-radius: 10px;
+  margin-bottom: 20px;
 `
 const nftImg = css`
-    width: 100%;
+    width: 95%;
+    border-radius: 10px;
+    margin-top: 20px;
+    margin-bottom: 10px;
 `
