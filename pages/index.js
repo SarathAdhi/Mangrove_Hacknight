@@ -136,7 +136,6 @@ const nftBox = css`
   }
 `
 const nftSeller = css`
-    position: relative;
     font-size: 10px;
 `
 
