@@ -1,0 +1,41 @@
+.header {
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.header-container-1 {
+    width: 100%;
+    background-color: #111;
+    color: white;
+    border-bottom: 1px solid white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+.header-container-1 h1 {
+    margin-left: 10px;
+    font-size: 30px;
+}
+.header-container-2{
+    width: 100%;
+    background-color: #111;
+    color: white;
+    height: 50px;
+    border-bottom: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-container-2 div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header-container-2 div a {
+    margin: 0px 20px;
+    font-size: 16px;
+}
