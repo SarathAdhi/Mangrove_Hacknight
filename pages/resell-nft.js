@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import Web3Modal from 'web3modal'
+import { css } from '@emotion/css'
 
 import {
   marketplaceAddress
@@ -46,22 +47,63 @@ export default function ResellNFT() {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="w-1/2 flex flex-col pb-12">
+    <div className={listNfts}>
+      <div className={listNftsContainer}>
         <input
+        type='number'
           placeholder="Asset Price in Eth"
-          className="mt-2 border rounded p-4"
-          onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
+          className={sellNftInput}
+          onChange={e => {
+            updateFormInput({ ...formInput, price: e.target.value });
+            var val = e.target.value - router.query.price;
+            console.log(val)
+            if(e.target.value >= router.query.price)
+              document.getElementById("profit-loss").innerHTML = val+" Ethers Profit";
+            if(e.target.value < router.query.price)
+              document.getElementById("profit-loss").innerHTML = val+" Ethers Loss";
+            
+          }}
         />
+        <p id='profit-loss'  className={pTag}></p>
         {
           image && (
             <img className="rounded mt-4" width="350" src={image} />
           )
         }
-        <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
-          List NFT
+        <button onClick={listNFTForSale} className={buyNftBtn}>
+          ReSell
         </button>
       </div>
     </div>
   )
-    }
+}
+
+const listNfts = css`
+  padding-top: 200px;
+  display: flex;
+  justify-content: center;
+`
+
+const listNftsContainer = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+const buyNftBtn = css`
+  margin-top: 20px;
+  background: rgb(45, 129, 255);;
+  padding: 5px 15px;
+  border: 2px solid #111;
+  border-radius: 10px;
+  margin-bottom: 20px;
+`
+const sellNftInput = css`
+    width: 100%;
+    margin: 10px 0px;
+    padding: 10px 10px;
+    border-radius: 10px;
+`
+const pTag = css`
+    color: white;
+`

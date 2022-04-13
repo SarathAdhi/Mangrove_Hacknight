@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
+import { css } from '@emotion/css'
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -70,38 +71,81 @@ export default function CreateItem() {
   }
 
   return (
-    <div className="flex justify-center top">
-      <div className="w-1/2 flex flex-col pb-12">
+    <div className={sellPage}>
+      <div className={sellPageContainer}>
         <input 
           placeholder="Asset Name"
-          className="mt-8 border rounded p-4"
+          className={sellPageInput}
           onChange={e => updateFormInput({ ...formInput, name: e.target.value })}
         />
         <textarea
           placeholder="Asset Description"
-          className="mt-2 border rounded p-4"
+          className={sellPageInput}
           onChange={e => updateFormInput({ ...formInput, description: e.target.value })}
         />
         <input
           placeholder="Asset Price in Eth"
-          className="mt-2 border rounded p-4"
+          className={sellPageInput}
           onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
         />
         <input
           type="file"
           name="Asset"
-          className="my-4"
+          className={sellPageInput}
           onChange={onChange}
+          style={{color: 'white'}}
+          onClick={() => document.getElementById("loading").style.display = "block"}
         />
+        <p className={loading} id='loading'>Loading....</p>
         {
-          fileUrl && (
-            <img className="rounded mt-4" width="350" src={fileUrl} />
-          )
+          fileUrl && (<img className={uploadedImg} width="350" src={fileUrl} />)
         }
-        <button onClick={listNFTForSale} className="font-bold mt-4 bg-pink-500 text-white rounded p-4 shadow-lg">
-          Create NFT
+        {
+          fileUrl && (document.getElementById('loading').innerHTML="")
+        }
+        <button onClick={listNFTForSale} className={PostDoc}>
+          POST
         </button>
       </div>
     </div>
   )
 }
+
+const sellPage = css`
+    padding-top: 160px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`
+const sellPageContainer = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 60%;
+`
+const sellPageInput = css`
+    width: 100%;
+    margin: 10px 0px;
+    padding: 10px 10px;
+    border-radius: 10px;
+`
+const loading = css`
+    display: none;
+    color: white;
+`
+const uploadedImg = css`
+    
+`
+const PostDoc = css`
+    margin: 20px 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #00FF00;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+    :hover {
+      border-radius: 15px;
+    }
+`

@@ -109,14 +109,14 @@ const buttonContainer = css`
 `
 const buttonStyle = css`
   background-color: #00FF00;
+  color: black;
   outline: none;
   border: none;
-  border: 2px solid white;
+  border: 2px solid green;
   font-size: 15px;
   padding: 6px 10px;
   border-radius: 10px;
   cursor: pointer;
-  // box-shadow: 7px 7px rgba(0, 0, 0, .1);
 `
 
 export default MyApp
