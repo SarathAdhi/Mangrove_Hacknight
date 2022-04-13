@@ -4,18 +4,32 @@ import { ethers } from 'ethers'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 import { useRouter } from 'next/router'
 import Web3Modal from 'web3modal'
+import crustAuth from '../scripts/crustAuth';
+import crustPinning from '../scripts/crustPinning';
+import placeStorageOrder from '../scripts/placeStorageOrder';
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
+const authHeader = crustAuth();
+
+const client = ipfsHttpClient({
+  // url:'https://ipfs.infura.io:5001/api/v0',
+  url: 'https://crustipfs.xyz',
+  headers: {
+    authorization: `Basic ${authHeader}`
+  }
+});
 
 import {
   marketplaceAddress
 } from '../config'
 
 import NFTMarketplace from '../artifacts/contracts/NFTMarketplace.sol/NFTMarketplace.json'
+// import { url } from 'inspector'
 
 export default function CreateItem() {
   const [fileUrl, setFileUrl] = useState(null)
   const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
+  const [fileCid, setFileCid] = useState(null)
+  const [fileSize, setFileSize] = useState(null)
   const router = useRouter()
 
   async function onChange(e) {
@@ -28,20 +42,29 @@ export default function CreateItem() {
           progress: (prog) => console.log(`received: ${prog}`)
         }
       )
+      const cid = added.cid;
+      setFileCid(cid);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
       setFileUrl(url)
+
+      console.log("------------FILESTAT-------------");
+      const fileStat = await client.files.stat("/ipfs/" + added.path);
+      console.log(fileStat);
+      setFileSize(fileStat.cumulativeSize);
     } catch (error) {
       console.log('Error uploading file: ', error)
     }  
   }
   async function uploadToIPFS() {
     const { name, description, price } = formInput
-    if (!name || !description || !price || !fileUrl) return
+    if (!name || !description || !price || !fileUrl || !fileCid) return
     /* first, upload metadata to IPFS */
     const data = JSON.stringify({
       name, description, image: fileUrl
     })
     try {
+      await crustPinning(fileCid, name);
+      await placeStorageOrder(fileCid, fileSize);
       const added = await client.add(data)
       const url = `https://ipfs.infura.io/ipfs/${added.path}`
       /* after metadata is uploaded to IPFS, return the URL to use it in the transaction */
