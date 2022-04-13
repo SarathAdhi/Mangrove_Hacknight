@@ -63,7 +63,7 @@ export default function CreateItem() {
     if (!name || !description || !price || !fileUrl || !fileCid) return
     /* first, upload metadata to IPFS */
     const data = JSON.stringify({
-      name, description, image: fileUrl
+      name, description, file: fileUrl
     })
     try {
       await crustPinning(fileCid, name);

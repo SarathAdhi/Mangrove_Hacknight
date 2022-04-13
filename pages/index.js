@@ -37,7 +37,7 @@ export default function Home() {
         tokenId: i.tokenId.toNumber(),
         seller: i.seller,
         owner: i.owner,
-        image: meta.data.image,
+        file: meta.data.file,
         name: meta.data.name,
         description: meta.data.description,
       }
@@ -73,7 +73,7 @@ export default function Home() {
 
               <div key={i} className={nftBox}>
                 <p className={nftSeller}>Creator: {nft.seller}</p>
-                <img className={nftImg} src={nft.image} />
+                <img className={nftImg} src={nft.file} />
                 {/* <p className="">Seller: {nft.seller}</p> */}
                 <p className={nftBoxName}>{nft.name}</p>
                 {/* <p className={nftBoxDes}>{nft.description}</p> */}
@@ -136,7 +136,6 @@ const nftBox = css`
   }
 `
 const nftSeller = css`
-    position: relative;
     font-size: 10px;
 `
 
