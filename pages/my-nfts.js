@@ -44,6 +44,7 @@ export default function MyAssets() {
         tokenId: i.tokenId.toNumber(),
         seller: i.seller,
         owner: i.owner,
+        file: meta.data.file,
         image: meta.data.image,
         tokenURI
       }
@@ -66,6 +67,7 @@ export default function MyAssets() {
             <p className={nftSeller}>Owner: {nft.owner}</p>
             <img className={nftImg} src={nft.image} />
             <p className={nftBoxPrc} id='p_price'>Purchased Price: {nft.price} ETH&nbsp;&nbsp;&nbsp;<Image width={30} height={30} src={require('./assets/etherium.svg')} /></p>
+            <a href={nft.file}>Download File</a>
             <button className={lishBtn} onClick={() => listNFT(nft)}>List</button>
           </div>
         ))

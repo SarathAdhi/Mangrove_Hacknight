@@ -33,6 +33,7 @@ export default function CreateItem() {
   const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' })
   const [fileCid, setFileCid] = useState(null)
   const [fileSize, setFileSize] = useState(null)
+  const [coverImageUrl, setCoverImageUrl] = useState(null)
   const router = useRouter()
 
   async function onChange(e) {
@@ -58,12 +59,31 @@ export default function CreateItem() {
       console.log('Error uploading file: ', error)
     }  
   }
+
+  async function onChangeCoverImage(e) {
+    /* upload image to IPFS */
+    const file = e.target.files[0]
+    try {
+      const added = await client.add(
+        file,
+        {
+          progress: (prog) => console.log(`received: ${prog}`)
+        }
+      )
+      const cid = added.cid;
+      const url = `https://ipfs.infura.io/ipfs/${added.path}`
+      setCoverImageUrl(url)
+    } catch (error) {
+      console.log('Error uploading file: ', error)
+    }  
+  }
+
   async function uploadToIPFS() {
     const { name, description, price } = formInput
     if (!name || !description || !price || !fileUrl || !fileCid) return
     /* first, upload metadata to IPFS */
     const data = JSON.stringify({
-      name, description, file: fileUrl
+      name, description, file: fileUrl, image: coverImageUrl
     })
     try {
       await crustPinning(fileCid, name);
@@ -113,6 +133,18 @@ export default function CreateItem() {
           className={sellPageInput}
           onChange={e => updateFormInput({ ...formInput, price: e.target.value })}
         />
+        <div style={{color: 'white'}}>Cover Image</div>
+        <input
+          type="file"
+          name="Asset"
+          className={sellPageInput}
+          onChange={onChangeCoverImage}
+          style={{color: 'white'}}
+          />
+          {
+            coverImageUrl && (<img className={uploadedImg} width="350" src={coverImageUrl} />)
+          }
+        <div style={{color: 'white'}}>File</div>
         <input
           type="file"
           name="Asset"
@@ -122,9 +154,6 @@ export default function CreateItem() {
           onClick={() => document.getElementById("loading").style.display = "block"}
         />
         <p className={loading} id='loading'>Loading....</p>
-        {
-          fileUrl && (<img className={uploadedImg} width="350" src={fileUrl} />)
-        }
         {
           fileUrl && (document.getElementById('loading').innerHTML="")
         }
